@@ -28,5 +28,12 @@ class DeepQNetwork(nn.Module):
         self.fc1 = nn.Linear(*self.input_dims, self.fc1_dims) # creates first full layer so we map the input dimensions to the neurons in first layer
         self.fc2 = nn.Linear(self.fc1_dims, self.fc2_dims) # neurons from first layer are being mapped to neurons in second layer
         self.fc3 = nn.Linear(self.fc2_dims, self.n_actions) # neurons from second layer are being mapped to the different actions this is OUTPUT layer
+        self.optimizer = optim.Adam(self.parameters(), lr=learning_rate) # the parameters() is to get all learnable paramters of network so weights and biases etc...
+        # we use the adams algorithm
+        # our optimizer is responsible for updating the neural networks paramaters to minimize the loss during training
+        self.loss = nn.MSELoss() # used to predict how well the predictive q-learning model matches the target q-values
+        # our loss function simply quantifies how well the model is performing with how the predicted q values are compared to target q values
+        self.device = T.device('cuda:0' if T.cuda.is_available() else 'cpu' ) # use the gpu is we have it connected otherwise use the cpu
 
-        
+
+
