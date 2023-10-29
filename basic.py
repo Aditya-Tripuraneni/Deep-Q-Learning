@@ -112,7 +112,6 @@ with torch.no_grad():
             correct += 1
 
 
-
 print(f"Correct {correct} Accuracy: {round((correct/30) * 100, 2)}")
 
 
