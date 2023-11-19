@@ -171,7 +171,7 @@ class Agent(): # our agent that interacts with the enviorment
 enviornment = gym.make('MountainCar-v0', render_mode="human")
 
 actions = enviornment.action_space.n 
-agent = Agent(0.99, epsilon=1, batch_size=64, num_actions=actions, eps_end=0.01, input_dimensions=2, learning_rate=0.001, max_mem_size=100000) # initally we have a 100% chance of picking some random action
+agent = Agent(0.75, epsilon=1, batch_size=64, num_actions=actions, eps_end=0.01, input_dimensions=2, learning_rate=0.001, max_mem_size=100000) # initally we have a 100% chance of picking some random action
 
 scores, eps_history = [], []
 
@@ -188,10 +188,11 @@ def shape_reward(position, velocity):
     distance_to_goal = abs(position - 0.5)
     position_penalty = -0.1 * distance_to_goal  # Coefficient I determined experimentally
 
-    # Penalize velocity
+    #Penalize velocity
     velocity_penalty = -0.1 * abs(velocity)  # Coefficient I determined experimentally
     
-    shaped_reward = position_penalty + velocity_penalty
+    shaped_reward = position_penalty + velocity
+
 
     return shaped_reward # is a negative reward since penalized for not reaching termination state
 
@@ -200,9 +201,6 @@ for i in range(EPISODES):
     done = False
     observation = enviornment.reset()
     step = 0
-
-    starting_position = -0.5719270706176758
-
 
     while not done:
         action = agent.choose_action(observation)
