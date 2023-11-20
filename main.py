@@ -98,9 +98,9 @@ class Agent(): # our agent that interacts with the enviorment
 
         
         if isinstance(observation, np.ndarray):
-            state = T.tensor([observation]).to(self.Q_eval.device)
+            state = T.tensor(np.array([observation])).to(self.Q_eval.device)
         elif isinstance(observation, tuple):
-            state = T.tensor([observation[0]]).to(self.Q_eval.device)
+            state = T.tensor(np.array([observation[0]])).to(self.Q_eval.device)
 
         state = state.view(1, -1)  # Add a batch dimension
 
@@ -165,13 +165,10 @@ class Agent(): # our agent that interacts with the enviorment
 
 
 
-
-
-
 enviornment = gym.make('MountainCar-v0', render_mode="human")
 
 actions = enviornment.action_space.n 
-agent = Agent(0.75, epsilon=1, batch_size=64, num_actions=actions, eps_end=0.01, input_dimensions=2, learning_rate=0.001, max_mem_size=100000) # initally we have a 100% chance of picking some random action
+agent = Agent(0.99, epsilon=1, batch_size=64, num_actions=actions, eps_end=0.01, input_dimensions=2, learning_rate=0.001, max_mem_size=100000) # initally we have a 100% chance of picking some random action
 
 scores, eps_history = [], []
 
@@ -194,7 +191,7 @@ def shape_reward(position, velocity):
     shaped_reward = position_penalty + velocity
 
 
-    return shaped_reward # is a negative reward since penalized for not reaching termination state
+    return shaped_reward + velocity_penalty # is a negative reward since penalized for not reaching termination state
 
 for i in range(EPISODES):
     score = 0
@@ -210,8 +207,6 @@ for i in range(EPISODES):
         agent.learn()
         observation = new_observation
 
-
-
         
         score += shape_reward(new_observation[0], new_observation[1])
 
@@ -225,9 +220,6 @@ for i in range(EPISODES):
     avg_score = np.mean(scores[-100:])
 
     print(f"Episode: {i}, Score:{round(score, 2)}, Average Score: {round(avg_score, 2)} Epislon: {agent.epsilon}")
-
-    x = [i+1 for i in range(EPISODES)]
-
 
 
 
